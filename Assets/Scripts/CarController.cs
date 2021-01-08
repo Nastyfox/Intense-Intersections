@@ -7,6 +7,10 @@ public class CarController : MonoBehaviour
     //Private variables
     private float speed = 5.0f;
 
+    //Private variables for positions outside map
+    private float horizontalOutside = 15.0f;
+    private float verticalOutside = 10.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,5 +22,14 @@ public class CarController : MonoBehaviour
     {
         //Make car move forward
         transform.Translate(Vector3.forward * Time.deltaTime * speed);
+        DestroyOutsideRoad();
+    }
+
+    private void DestroyOutsideRoad()
+    {
+        if(transform.position.x <= -horizontalOutside  || transform.position.x >= horizontalOutside || transform.position.z <= -verticalOutside || transform.position.z >= verticalOutside)
+        {
+            Destroy(gameObject);
+        }
     }
 }
