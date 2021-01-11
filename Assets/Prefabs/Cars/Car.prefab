@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 2738641754494329407}
   m_Layer: 0
   m_Name: Car
-  m_TagString: Untagged
+  m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -305,6 +305,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 001439bc29fa44c4db25d9ef7aeafe0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 5
+  horizontalOutside: 15
+  verticalOutside: 10
 --- !u!54 &2738641754494329407
 Rigidbody:
   m_ObjectHideFlags: 0

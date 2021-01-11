@@ -5,9 +5,11 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     //Private variables for spawning cars
-    private float delayStart = 2.0f;
-    private float carRepeatingTime = 2.5f;
-    private float pedRepeatingTime = 2.5f;
+    [SerializeField] private float carRepeatingTime = 2.5f;
+    [SerializeField] private float pedRepeatingTime = 2.5f;
+    private Coroutine spawnCars;
+    private Coroutine spawnPeds;
+    private GameManager gameManager;
     private int randomCarStart;
     private int randomPedStart;
     private int randomRotation;
@@ -23,20 +25,21 @@ public class SpawnManager : MonoBehaviour
     private Quaternion pedRotation;
 
     //Public variable for car prefab
-    public GameObject carPrefab;
+    [SerializeField] private GameObject carPrefab;
     private GameObject pedPrefab;
-    public GameObject[] pedPrefabs;
+    private int pedType;
+    [SerializeField] private GameObject[] pedPrefabs;
 
     //Private variables for standard positions
-    private float xSide = 15.0f;
-    private float zSide = 10.0f;
-    private float yHeight = 0.5f;
+    [SerializeField] private float xSide = 15.0f;
+    [SerializeField] private float zSide = 10.0f;
+    [SerializeField] private float yHeight = 0.5f;
 
     //Private variables for standard rotations
-    private float faceRight = 90.0f;
-    private float faceLeft = -90.0f;
-    private float faceUp = 0.0f;
-    private float faceDown = 180.0f;
+    [SerializeField] private float faceRight = 90.0f;
+    [SerializeField] private float faceLeft = -90.0f;
+    [SerializeField] private float faceUp = 0.0f;
+    [SerializeField] private float faceDown = 180.0f;
 
     //Private variable for width and offset
     private float roadWidth;
@@ -78,35 +81,61 @@ public class SpawnManager : MonoBehaviour
         startRotations[3] = Quaternion.Euler(0, faceUp, 0);
 
         //Start spawning car every couple of seconds
-        InvokeRepeating("SpawnCarsRandom", delayStart, carRepeatingTime);
-        InvokeRepeating("SpawnPedestriansRandom", delayStart, pedRepeatingTime);
-    }
+        spawnCars = StartCoroutine(SpawnCarsRandom());
+        spawnPeds = StartCoroutine(SpawnPedestriansRandom());
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+}
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        
+        if(gameManager.isGameOver)
+        {
+            StopCoroutine(spawnCars);
+            StopCoroutine(spawnPeds);
+        }
     }
 
     //Method to spawn cars at random positions
-    private void SpawnCarsRandom()
+    IEnumerator SpawnCarsRandom()
     {
-        randomCarStart = Random.Range(0, carNumPositions);
-        randomRotation = randomCarStart;
-        carPosition = carStartPositions[randomCarStart];
-        carRotation = startRotations[randomRotation];
+        while(true)
+        {
+            yield return new WaitForSeconds(carRepeatingTime);
+            randomCarStart = Random.Range(0, carNumPositions);
+            randomRotation = randomCarStart;
+            carPosition = carStartPositions[randomCarStart];
+            carRotation = startRotations[randomRotation];
 
-        Instantiate(carPrefab, carPosition, carRotation);
+            GameObject car = ObjectPooling.SharedInstance.GetCarObject();
+            if(car != null)
+            {
+                car.transform.position = carPosition;
+                car.transform.rotation = carRotation;
+                car.SetActive(true);
+            }
+        }
     }
 
-    private void SpawnPedestriansRandom()
+    IEnumerator SpawnPedestriansRandom()
     {
-        pedPrefab = pedPrefabs[Random.Range(0, pedPrefabs.Length)];
-        randomPedStart = Random.Range(0, pedNumPositions);
-        randomRotation = randomPedStart % 4;
-        pedPosition = pedStartPositions[randomPedStart];
-        pedRotation = startRotations[randomRotation];
+        while(true)
+        {
+            yield return new WaitForSeconds(pedRepeatingTime);
+            pedType = Random.Range(0, pedPrefabs.Length);
+            pedPrefab = pedPrefabs[pedType];
+            randomPedStart = Random.Range(0, pedNumPositions);
+            randomRotation = randomPedStart % 4;
+            pedPosition = pedStartPositions[randomPedStart];
+            pedRotation = startRotations[randomRotation];
 
-        Instantiate(pedPrefab, pedPosition, pedRotation);
+            GameObject pedestrian = ObjectPooling.SharedInstance.GetPedObject(pedType);
+            if (pedestrian != null)
+            {
+                pedestrian.transform.position = pedPosition;
+                pedestrian.transform.rotation = pedRotation;
+                pedestrian.SetActive(true);
+            }
+        }
     }
 }

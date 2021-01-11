@@ -3300,7 +3300,7 @@ GameObject:
   - component: {fileID: -8136727910167988211}
   m_Layer: 0
   m_Name: Male
-  m_TagString: Untagged
+  m_TagString: Pedestrian
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3389,6 +3389,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b602c87e5d09f834c81f9c5111d65c15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 2.5
+  horizontalOutside: 15
+  verticalOutside: 10
 --- !u!1 &8968715890758173446
 GameObject:
   m_ObjectHideFlags: 0
