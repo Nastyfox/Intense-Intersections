@@ -50,4 +50,13 @@ public class PedestrianController : MonoBehaviour
             pedAnim.SetBool("walking", true);
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Pedestrian"))
+        {
+            collision.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+        }
+    }
 }

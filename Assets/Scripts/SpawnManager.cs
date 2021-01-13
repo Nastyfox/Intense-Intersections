@@ -45,21 +45,13 @@ public class SpawnManager : MonoBehaviour
 
     //Private variable for width and offset
     private float roadWidth;
-    private float carOffset;
-    private float pedestrianOffset1;
-    private float pedestrianOffset2;
-
-    public int test;
+    [SerializeField] private float carOffset;
+    [SerializeField] private float pedestrianOffset1;
+    [SerializeField] private float pedestrianOffset2;
 
     // Start is called before the first frame update
     void Start()
     {
-        //Get road with to shift cars and pedestrians
-        roadWidth = GameObject.Find("RoadVertical").GetComponent<MeshRenderer>().bounds.size.x;
-        carOffset = roadWidth / 4;
-        pedestrianOffset1 = 3 * roadWidth / 4;
-        pedestrianOffset2 = roadWidth;
-
         //Create start positions and start rotations
         carStartPositions = new Vector3[carNumPositions];
         startRotations = new Quaternion[numRotations];

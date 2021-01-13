@@ -306,13 +306,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  horizontalOutside: 15
-  verticalOutside: 10
-  lights:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  horizontalOutside: 26
+  verticalOutside: 21
+  carPosition: 0
+  stopDistanceLights: 7
+  stopDistanceCar: 2
+  goDistanceCar: 5
+  stopAngleCars: 20
+  stopAngleLights: 20
+  angleLightsPassed: 19
 --- !u!54 &2738641754494329407
 Rigidbody:
   m_ObjectHideFlags: 0
