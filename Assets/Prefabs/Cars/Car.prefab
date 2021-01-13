@@ -308,6 +308,11 @@ MonoBehaviour:
   speed: 5
   horizontalOutside: 15
   verticalOutside: 10
+  lights:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!54 &2738641754494329407
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -68,4 +68,18 @@ public class ObjectPooling : MonoBehaviour
         }
         return null;
     }
+
+    public List<GameObject> GetActiveCars()
+    {
+        List<GameObject> activeCars = new List<GameObject>();
+
+        for (int i = 0; i < carAmountToPool; i++)
+        {
+            if (pooledCars[i].activeInHierarchy)
+            {
+                activeCars.Add(pooledCars[i]);
+            }
+        }
+        return activeCars;
+    }
 }

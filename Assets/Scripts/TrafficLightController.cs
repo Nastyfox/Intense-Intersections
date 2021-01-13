@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TrafficLightController : MonoBehaviour
 {
-    private bool isGreen;
-    private bool isRed;
+    public bool isGreen;
+    public bool isRed;
     private MeshRenderer lightsMeshRenderer;
 
     private Color greenAlbedo;

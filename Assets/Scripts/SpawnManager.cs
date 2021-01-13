@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+    public enum carPositions { Left, Right, Up, Bot}
+
     //Private variables for spawning cars
     [SerializeField] private float carRepeatingTime = 2.5f;
     [SerializeField] private float pedRepeatingTime = 2.5f;
@@ -47,6 +49,8 @@ public class SpawnManager : MonoBehaviour
     private float pedestrianOffset1;
     private float pedestrianOffset2;
 
+    public int test;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,10 +65,10 @@ public class SpawnManager : MonoBehaviour
         startRotations = new Quaternion[numRotations];
         pedStartPositions = new Vector3[pedNumPositions];
 
-        carStartPositions[0] = new Vector3(-xSide, yHeight, -carOffset);
-        carStartPositions[1] = new Vector3(xSide, yHeight, carOffset);
-        carStartPositions[2] = new Vector3(-carOffset, yHeight, zSide);
-        carStartPositions[3] = new Vector3(carOffset, yHeight, -zSide);
+        carStartPositions[(int)carPositions.Left] = new Vector3(-xSide, yHeight, -carOffset);
+        carStartPositions[(int)carPositions.Right] = new Vector3(xSide, yHeight, carOffset);
+        carStartPositions[(int)carPositions.Up] = new Vector3(-carOffset, yHeight, zSide);
+        carStartPositions[(int)carPositions.Bot] = new Vector3(carOffset, yHeight, -zSide);
 
         pedStartPositions[0] = new Vector3(-xSide, yHeight, -pedestrianOffset2);
         pedStartPositions[1] = new Vector3(xSide, yHeight, pedestrianOffset2);
@@ -112,6 +116,7 @@ public class SpawnManager : MonoBehaviour
             {
                 car.transform.position = carPosition;
                 car.transform.rotation = carRotation;
+                car.GetComponent<CarController>().carPosition = randomCarStart;
                 car.SetActive(true);
             }
         }

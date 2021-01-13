@@ -156,8 +156,8 @@ MonoBehaviour:
   carPrefab: {fileID: 9193091905229099719, guid: 5a826e1a9f9a0a74fbf63d825c3e464a,
     type: 3}
   pedPrefabs:
-  - {fileID: 8920631899902589099, guid: cfdeca144f90cd94cafba1202ea90251, type: 3}
   - {fileID: 6717947756038318535, guid: 4c8fbf777ee1e0347a5fbb2ce748b3b5, type: 3}
+  - {fileID: 8920631899902589099, guid: cfdeca144f90cd94cafba1202ea90251, type: 3}
   xSide: 15
   zSide: 10
   yHeight: 0.5
@@ -165,6 +165,7 @@ MonoBehaviour:
   faceLeft: -90
   faceUp: 0
   faceDown: 180
+  test: 0
 --- !u!4 &145141336
 Transform:
   m_ObjectHideFlags: 0
@@ -219,6 +220,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd7429a0cf14644c90013563b161b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGreen: 0
+  isRed: 0
 --- !u!65 &266357369
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -478,6 +481,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd7429a0cf14644c90013563b161b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGreen: 0
+  isRed: 0
 --- !u!65 &651746911
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -512,6 +517,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TrafficLightLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436054952342127167, guid: db10cdf4b7c4a134db46097674a38008,
+        type: 3}
+      propertyPath: m_Name
+      value: Lights
       objectReference: {fileID: 0}
     - target: {fileID: 4436054952342127167, guid: db10cdf4b7c4a134db46097674a38008,
         type: 3}
@@ -777,6 +787,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd7429a0cf14644c90013563b161b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGreen: 0
+  isRed: 0
 --- !u!65 &912944654
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1198,6 +1210,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4436054952342127167, guid: db10cdf4b7c4a134db46097674a38008,
         type: 3}
+      propertyPath: m_Name
+      value: Lights
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436054952342127167, guid: db10cdf4b7c4a134db46097674a38008,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -1474,6 +1491,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd7429a0cf14644c90013563b161b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGreen: 0
+  isRed: 0
 --- !u!65 &1558008970
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1608,6 +1627,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TrafficLightBot
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436054952342127167, guid: db10cdf4b7c4a134db46097674a38008,
+        type: 3}
+      propertyPath: m_Name
+      value: Lights
       objectReference: {fileID: 0}
     - target: {fileID: 4436054952342127167, guid: db10cdf4b7c4a134db46097674a38008,
         type: 3}
@@ -1752,6 +1776,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TrafficLightUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436054952342127167, guid: db10cdf4b7c4a134db46097674a38008,
+        type: 3}
+      propertyPath: m_Name
+      value: Lights
       objectReference: {fileID: 0}
     - target: {fileID: 4436054952342127167, guid: db10cdf4b7c4a134db46097674a38008,
         type: 3}
