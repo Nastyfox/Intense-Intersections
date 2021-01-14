@@ -24,9 +24,11 @@ public class ObjectPooling : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
+        //Instantiate every necessary objects for the game
         pooledCars = new List<GameObject>();
         GameObject tmp;
         
+        //Instantiation of cars
         for(int i = 0; i < carAmountToPool; i++)
         {
             tmp = Instantiate(carToPool);
@@ -34,6 +36,7 @@ public class ObjectPooling : MonoBehaviour
             pooledCars.Add(tmp);
         }
 
+        //Instantiation of male and female pedestrians
         for (int i = 0; i < pedAmountToPool; i++)
         {
             tmp = Instantiate(maleToPool);
@@ -47,6 +50,7 @@ public class ObjectPooling : MonoBehaviour
 
     public GameObject GetPedObject(int type)
     {
+        //Return first inactive pedestrian object based on type for male or female
         for (int i = 0; i < 2 * pedAmountToPool; i += 2)
         {
             if (!pooledPeds[i + type].activeInHierarchy)
@@ -59,6 +63,7 @@ public class ObjectPooling : MonoBehaviour
     
     public GameObject GetCarObject()
     {
+        //Return first inactive car object
         for (int i = 0; i < carAmountToPool; i++)
         {
             if (!pooledCars[i].activeInHierarchy)
@@ -71,6 +76,7 @@ public class ObjectPooling : MonoBehaviour
 
     public List<GameObject> GetActiveCars()
     {
+        //Return all active cars
         List<GameObject> activeCars = new List<GameObject>();
 
         for (int i = 0; i < carAmountToPool; i++)

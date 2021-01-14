@@ -24,6 +24,7 @@ public class TrafficLightController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Get all materials for the three color lights and there based color
         lightsMeshRenderer = gameObject.GetComponent<MeshRenderer>();
 
         yellowLight = lightsMeshRenderer.materials[0];
@@ -44,12 +45,14 @@ public class TrafficLightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Change colors to make traffic light appear green
         if (isGreen)
         {
             RedToGreen();
             isRed = false;
             isGreen = true;
         }
+        //Change colors to make traffic light appear red after yellow
         else if (!isGreen && !isRed)
         {
             StartCoroutine(GreenToRed());
@@ -60,11 +63,13 @@ public class TrafficLightController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        //Change state of traffic light
         isGreen = !isGreen;
     }
 
     private void RedToGreen()
     {
+        //Every material in black except green one
         greenLight.color = greenAlbedo;
         greenLight.SetColor("_SpecColor", greenSpecular);
         yellowLight.color = Color.black;
@@ -75,11 +80,15 @@ public class TrafficLightController : MonoBehaviour
 
     IEnumerator GreenToRed()
     {
+        //Activate only yellow material
         greenLight.color = Color.black;
         greenLight.SetColor("_SpecColor", Color.black);
         yellowLight.color = yellowAlbedo;
         yellowLight.SetColor("_SpecColor", yellowSpecular);
+
         yield return new WaitForSeconds(1);
+
+        //Then activate only red material
         yellowLight.color = Color.black;
         yellowLight.SetColor("_SpecColor", Color.black);
         redLight.color = redAlbedo;

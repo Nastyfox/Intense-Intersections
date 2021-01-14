@@ -14,9 +14,9 @@ public class PedestrianController : MonoBehaviour
 
     private Animator pedAnim;
 
-    // Start is called before the first frame update
     void Awake()
     {
+        //Get necessary components when object is activated
         pedAnim = GetComponent<Animator>();
         pedSpeed = speed;
     }
@@ -24,13 +24,14 @@ public class PedestrianController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Make car move forward
+        //Make pedestrian move forward
         transform.Translate(Vector3.forward * Time.deltaTime * pedSpeed);
         DeactivateOutsideRoad();
     }
 
     private void DeactivateOutsideRoad()
     {
+        //Deactivate pedestrian object if out of the road on camera
         if (transform.position.x <= -horizontalOutside || transform.position.x >= horizontalOutside || transform.position.z <= -verticalOutside || transform.position.z >= verticalOutside)
         {
             gameObject.SetActive(false);
@@ -39,11 +40,13 @@ public class PedestrianController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        //Stop the pedestrian and animation
         if (pedSpeed > 0)
         {
             pedSpeed = 0;
             pedAnim.SetBool("walking", false);
         }
+        //Make the pedestrian move and make it animate
         else if (pedSpeed == 0)
         {
             pedSpeed = speed;
@@ -53,6 +56,7 @@ public class PedestrianController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //If two pedestrian collide, make the inactive to avoid weird collisions
         if(collision.gameObject.CompareTag("Pedestrian"))
         {
             collision.gameObject.SetActive(false);

@@ -76,15 +76,26 @@ public class SpawnManager : MonoBehaviour
         startRotations[2] = Quaternion.Euler(0, faceDown, 0);
         startRotations[3] = Quaternion.Euler(0, faceUp, 0);
 
+        //Get game manager to stop spawning on game over
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+}
+
+    public void SetDifficulty(int difficulty)
+    {
+        //Change spawning times based on difficulty level on main menu
+        carRepeatingTime /= difficulty;
+        pedRepeatingTime /= difficulty;
+        print(carRepeatingTime);
+
         //Start spawning car every couple of seconds
         spawnCars = StartCoroutine(SpawnCarsRandom());
         spawnPeds = StartCoroutine(SpawnPedestriansRandom());
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-}
+    }
 
     // Update is called once per frame
     void LateUpdate()
     {
+        //Stop coroutines when game is over in order to stop spawning
         if(gameManager.isGameOver)
         {
             StopCoroutine(spawnCars);
@@ -97,12 +108,14 @@ public class SpawnManager : MonoBehaviour
     {
         while(true)
         {
+            //Wait a certain time before randomly spawn a car 
             yield return new WaitForSeconds(carRepeatingTime);
             randomCarStart = Random.Range(0, carNumPositions);
             randomRotation = randomCarStart;
             carPosition = carStartPositions[randomCarStart];
             carRotation = startRotations[randomRotation];
 
+            //Use precreated objects of object pooling to activate them when necessary
             GameObject car = ObjectPooling.SharedInstance.GetCarObject();
             if(car != null)
             {
@@ -116,8 +129,9 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnPedestriansRandom()
     {
-        while(true)
+        while (true)
         {
+            //Wait a certain time before randomly spawn a pedestrian
             yield return new WaitForSeconds(pedRepeatingTime);
             pedType = Random.Range(0, pedPrefabs.Length);
             pedPrefab = pedPrefabs[pedType];
@@ -126,6 +140,7 @@ public class SpawnManager : MonoBehaviour
             pedPosition = pedStartPositions[randomPedStart];
             pedRotation = startRotations[randomRotation];
 
+            //Use precreated objects of object pooling to activate them when necessary
             GameObject pedestrian = ObjectPooling.SharedInstance.GetPedObject(pedType);
             if (pedestrian != null)
             {
