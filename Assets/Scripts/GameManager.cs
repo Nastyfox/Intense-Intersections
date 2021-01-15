@@ -30,9 +30,11 @@ public class GameManager : MonoBehaviour
     public float lives = 3;
     private GameObject livesObject;
     public TextMeshProUGUI livesText;
+    private int difficultyLevel;
 
     //Variables for timer in easy, normal and hard mode
-    private float timer = 20;
+    private float timer;
+    private float timerDuration = 20;
     public TextMeshProUGUI timerText;
 
     private void Start()
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
         titleScreen = GameObject.Find("TitleScreen");
         spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
         spawnManager.gameObject.SetActive(false);
+        timer = timerDuration;
 
         //Get elements to manage lives
         livesObject = GameObject.Find("Canvas").transform.Find("Lives").gameObject;
@@ -52,22 +55,25 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        //Update timer in easy, normal and hard mode
-        if(!isInfinite && isGameActive)
+        //Update timer in every mode
+        if(isGameActive)
         {
             UpdateTimer();
-        }
-        //Update lives if infinite mode
-        else if(isInfinite && isGameActive)
-        {
-            DisplayLives();
 
-            //Game over if no more lives
-            if (lives == 0)
+            //Update lives if infinite mode
+            if (isInfinite)
             {
-                GameOver();
+                DisplayLives();
+
+                //Game over if no more lives
+                if (lives == 0)
+                {
+                    GameOver();
+                }
             }
         }
+
+        
     }
 
     public void GameOver()
@@ -86,19 +92,25 @@ public class GameManager : MonoBehaviour
 
     public void StartGame(int difficulty)
     {
+        //Set scoring level to the difficult value
+        difficultyLevel = difficulty;
+
         //Check if infinite mode chosen
-        if(difficulty == (int)gameModes.INFINITE)
+        if (difficulty == (int)gameModes.INFINITE)
         {
             //Enable scoring and lives
             isInfinite = true;
             scoreText.enabled = true;
             livesObject.SetActive(true);
+            //Set difficulty to 1 for infinite mode
+            difficultyLevel = 1;
         }
         else
         {
             //Enable timer
             isInfinite = false;
             timerText.enabled = true;
+            timer *= difficulty;
         }
 
         //Deactivate title screen, activate spawning based on difficulty level and change timer before start the game
@@ -106,7 +118,6 @@ public class GameManager : MonoBehaviour
         spawnManager.gameObject.SetActive(true);
         spawnManager.SetDifficulty(difficulty);
         score = 0;
-        timer *= difficulty;
         isGameActive = true;
     }
 
@@ -126,7 +137,7 @@ public class GameManager : MonoBehaviour
     public void UpdateScore(int scoreToAdd)
     {
         //Add score to the actual score and display it
-        score += scoreToAdd;
+        score += scoreToAdd * difficultyLevel;
         scoreText.text = "Score : " + score;
     }
 
@@ -135,14 +146,24 @@ public class GameManager : MonoBehaviour
         //Change timer at each frame and use round to only display seconds
         timer -= Time.deltaTime;
         timerText.text = "Time : " + Mathf.Round(timer);
-
-        //Timer is over so game is won
+        
         if(timer <= 0)
         {
-            isGameWon = true;
-            isGameActive = false;
-            gameWonScreen.SetActive(true);
-            timerText.enabled = false;
+            //Timer is over so game is won in easy, normal and hard mode
+            if (!isInfinite)
+            {
+                isGameWon = true;
+                isGameActive = false;
+                gameWonScreen.SetActive(true);
+                timerText.enabled = false;
+            }
+            //In infinite mode, increase difficulty
+            else
+            {
+                spawnManager.IncreaseDifficulty();
+                difficultyLevel++;
+                timer = timerDuration;
+            }
         }
     }
 

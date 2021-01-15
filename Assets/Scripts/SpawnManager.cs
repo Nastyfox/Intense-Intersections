@@ -95,6 +95,13 @@ public class SpawnManager : MonoBehaviour
         spawnPeds = StartCoroutine(SpawnPedestriansRandom());
     }
 
+    public void IncreaseDifficulty()
+    {
+        //Reduce spawn rate to increase difficulty
+        carRepeatingTime /= 2;
+        pedRepeatingTime /= 2;
+    }
+
     // Update is called once per frame
     void LateUpdate()
     {
