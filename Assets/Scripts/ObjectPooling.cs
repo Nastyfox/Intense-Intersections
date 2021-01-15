@@ -88,4 +88,19 @@ public class ObjectPooling : MonoBehaviour
         }
         return activeCars;
     }
+
+    public List<GameObject> GetActivePeds()
+    {
+        //Return all active pedestrians
+        List<GameObject> activePeds = new List<GameObject>();
+
+        for (int i = 0; i < 2 * pedAmountToPool; i++)
+        {
+            if (pooledPeds[i].activeInHierarchy)
+            {
+                activePeds.Add(pooledPeds[i]);
+            }
+        }
+        return activePeds;
+    }
 }

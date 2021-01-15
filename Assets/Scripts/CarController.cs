@@ -34,7 +34,9 @@ public class CarController : MonoBehaviour
     [SerializeField] private float angleLightsPassed = 50;
     private bool mouseClicked;
 
-    // Start is called before the first frame update
+    //Value for scoring cars
+    [SerializeField] private int scoreCar = 10;
+
     void Awake()
     {
         //Get game manager
@@ -87,16 +89,32 @@ public class CarController : MonoBehaviour
         {
             lightsPassed = false;
             gameObject.SetActive(false);
+            gameManager.UpdateScore(scoreCar);
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        //If there is a collisio between 2 cars or car and pedestrian, game is over
+        //If there is a collision between 2 cars or car and pedestrian
         if (collision.gameObject.CompareTag("Pedestrian") || collision.gameObject.CompareTag("Car"))
         {
-            print("Game Over");
-            gameManager.GameOver();
+            //If infinite mode, just lose a life
+            if(gameManager.isInfinite)
+            {
+                if (collision.gameObject.CompareTag("Pedestrian"))
+                {
+                    gameManager.lives--;
+                }
+                else if(collision.gameObject.CompareTag("Car"))
+                {
+                    gameManager.lives -= 0.5f;
+                }
+            }
+            //If easy, normal or hard mode, game over
+            else
+            {
+                gameManager.GameOver();
+            }
             collision.gameObject.SetActive(false);
         }
     }
@@ -207,16 +225,16 @@ public class CarController : MonoBehaviour
         //Get correct light of the road line based on the car position
         switch (carPosition)
         {
-            case (int)SpawnManager.carPositions.Left:
+            case (int)SpawnManager.carPositions.LEFT:
                 lights = GameObject.Find("TrafficLightLeft").transform.Find("Lights").gameObject;
                 break;
-            case (int)SpawnManager.carPositions.Right:
+            case (int)SpawnManager.carPositions.RIGHT:
                 lights = GameObject.Find("TrafficLightRight").transform.Find("Lights").gameObject;
                 break;
-            case (int)SpawnManager.carPositions.Up:
+            case (int)SpawnManager.carPositions.UP:
                 lights = GameObject.Find("TrafficLightUp").transform.Find("Lights").gameObject;
                 break;
-            case (int)SpawnManager.carPositions.Bot:
+            case (int)SpawnManager.carPositions.BOT:
                 lights = GameObject.Find("TrafficLightBot").transform.Find("Lights").gameObject;
                 break;
         }

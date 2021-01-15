@@ -1,16 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    //Enumeration for game modes
+    public enum gameModes { EASY = 1, NORMAL = 2, HARD = 3, INFINITE = 4 }
+
     //Variable to manage game over state
-    public bool isGameOver;
+    private bool isGameOver;
+    private bool isGameWon;
+    public bool isInfinite;
+    public bool isGameActive;
 
     //Variables to manage main menu and start of the game
     private GameObject titleScreen;
+    private GameObject gameOverScreen;
+    private GameObject gameWonScreen;
     private SpawnManager spawnManager;
-    private bool gameStarted;
+
+    //Variables for scoring and lives in infinite mode
+    private int score;
+    public TextMeshProUGUI scoreText;
+    const string scoreKey = "High Score";
+    private int lastHighScore;
+    public TextMeshProUGUI highScoreText;
+    public float lives = 3;
+    private GameObject livesObject;
+    public TextMeshProUGUI livesText;
+
+    //Variables for timer in easy, normal and hard mode
+    private float timer = 20;
+    public TextMeshProUGUI timerText;
 
     private void Start()
     {
@@ -18,20 +41,137 @@ public class GameManager : MonoBehaviour
         titleScreen = GameObject.Find("TitleScreen");
         spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
         spawnManager.gameObject.SetActive(false);
+
+        //Get elements to manage lives
+        livesObject = GameObject.Find("Canvas").transform.Find("Lives").gameObject;
+
+        //Get elements to manage end of the game
+        gameOverScreen = GameObject.Find("Canvas").transform.Find("GameOverScreen").gameObject;
+        gameWonScreen = GameObject.Find("Canvas").transform.Find("GameWonScreen").gameObject;
+    }
+
+    private void Update()
+    {
+        //Update timer in easy, normal and hard mode
+        if(!isInfinite && isGameActive)
+        {
+            UpdateTimer();
+        }
+        //Update lives if infinite mode
+        else if(isInfinite && isGameActive)
+        {
+            DisplayLives();
+
+            //Game over if no more lives
+            if (lives == 0)
+            {
+                GameOver();
+            }
+        }
     }
 
     public void GameOver()
     {
-        //Game is over
+        //Game is over and show the game over screen to restart
         isGameOver = true;
+        gameOverScreen.SetActive(true);
+        isGameActive = false;
+
+        //Save high score in infinite mode
+        if(isInfinite)
+        {
+            SaveHighScore();
+        }
     }
 
     public void StartGame(int difficulty)
-    { 
-        //Deactivate title screen, activate spawning based on difficulty level and start the game
+    {
+        //Check if infinite mode chosen
+        if(difficulty == (int)gameModes.INFINITE)
+        {
+            //Enable scoring and lives
+            isInfinite = true;
+            scoreText.enabled = true;
+            livesObject.SetActive(true);
+        }
+        else
+        {
+            //Enable timer
+            isInfinite = false;
+            timerText.enabled = true;
+        }
+
+        //Deactivate title screen, activate spawning based on difficulty level and change timer before start the game
         titleScreen.SetActive(false);
         spawnManager.gameObject.SetActive(true);
         spawnManager.SetDifficulty(difficulty);
-        gameStarted = true;
+        score = 0;
+        timer *= difficulty;
+        isGameActive = true;
+    }
+
+    public void Restart()
+    {
+        //Reload entire scene to make the game restart
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+
+    public void Quit()
+    {
+        //Quit the game
+        Application.Quit();
+    }
+
+    public void UpdateScore(int scoreToAdd)
+    {
+        //Add score to the actual score and display it
+        score += scoreToAdd;
+        scoreText.text = "Score : " + score;
+    }
+
+    private void UpdateTimer()
+    {
+        //Change timer at each frame and use round to only display seconds
+        timer -= Time.deltaTime;
+        timerText.text = "Time : " + Mathf.Round(timer);
+
+        //Timer is over so game is won
+        if(timer <= 0)
+        {
+            isGameWon = true;
+            isGameActive = false;
+            gameWonScreen.SetActive(true);
+            timerText.enabled = false;
+        }
+    }
+
+    private void SaveHighScore()
+    {
+        //Load high score
+        LoadHighScore();
+
+        //Check if new score is greater than previous one and if it is so, save the new one
+        if(score > lastHighScore)
+        {
+            lastHighScore = score;
+            PlayerPrefs.SetInt(scoreKey, score);
+            PlayerPrefs.Save();
+        }
+
+        //Display high score
+        highScoreText.enabled = true;
+        highScoreText.text = "High Score : " + lastHighScore;
+    }
+
+    private void LoadHighScore()
+    {
+        //Get last high score saved
+        lastHighScore = PlayerPrefs.GetInt(scoreKey, 0);
+    }
+
+    private void DisplayLives()
+    {
+        livesText.text = "x " + lives;
     }
 }

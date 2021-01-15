@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public enum carPositions { Left, Right, Up, Bot}
+    public enum carPositions { LEFT, RIGHT, UP, BOT}
 
     //Private variables for spawning cars
     [SerializeField] private float carRepeatingTime = 2.5f;
@@ -57,10 +57,10 @@ public class SpawnManager : MonoBehaviour
         startRotations = new Quaternion[numRotations];
         pedStartPositions = new Vector3[pedNumPositions];
 
-        carStartPositions[(int)carPositions.Left] = new Vector3(-xSide, yHeight, -carOffset);
-        carStartPositions[(int)carPositions.Right] = new Vector3(xSide, yHeight, carOffset);
-        carStartPositions[(int)carPositions.Up] = new Vector3(-carOffset, yHeight, zSide);
-        carStartPositions[(int)carPositions.Bot] = new Vector3(carOffset, yHeight, -zSide);
+        carStartPositions[(int)carPositions.LEFT] = new Vector3(-xSide, yHeight, -carOffset);
+        carStartPositions[(int)carPositions.RIGHT] = new Vector3(xSide, yHeight, carOffset);
+        carStartPositions[(int)carPositions.UP] = new Vector3(-carOffset, yHeight, zSide);
+        carStartPositions[(int)carPositions.BOT] = new Vector3(carOffset, yHeight, -zSide);
 
         pedStartPositions[0] = new Vector3(-xSide, yHeight, -pedestrianOffset2);
         pedStartPositions[1] = new Vector3(xSide, yHeight, pedestrianOffset2);
@@ -82,10 +82,13 @@ public class SpawnManager : MonoBehaviour
 
     public void SetDifficulty(int difficulty)
     {
-        //Change spawning times based on difficulty level on main menu
-        carRepeatingTime /= difficulty;
-        pedRepeatingTime /= difficulty;
-        print(carRepeatingTime);
+        //If it's infinite mode, don't change difficulty
+        if(!gameManager.isInfinite)
+        {
+            //Change spawning times based on difficulty level on main menu
+            carRepeatingTime /= difficulty;
+            pedRepeatingTime /= difficulty;
+        }
 
         //Start spawning car every couple of seconds
         spawnCars = StartCoroutine(SpawnCarsRandom());
@@ -96,10 +99,23 @@ public class SpawnManager : MonoBehaviour
     void LateUpdate()
     {
         //Stop coroutines when game is over in order to stop spawning
-        if(gameManager.isGameOver)
+        if(!gameManager.isGameActive)
         {
             StopCoroutine(spawnCars);
             StopCoroutine(spawnPeds);
+
+            //Deactivate every active cars and peds to avoid adding new points to the score
+            List<GameObject> activeCars = ObjectPooling.SharedInstance.GetActiveCars();
+            for (int i = 0; i < activeCars.Count; i++)
+            {
+                activeCars[i].gameObject.SetActive(false);
+            }
+
+            List<GameObject> activePeds = ObjectPooling.SharedInstance.GetActivePeds();
+            for (int i = 0; i < activePeds.Count; i++)
+            {
+                activePeds[i].gameObject.SetActive(false);
+            }
         }
     }
 
