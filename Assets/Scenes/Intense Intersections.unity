@@ -548,7 +548,7 @@ MonoBehaviour:
     type: 3}
   femaleToPool: {fileID: 6717947756038318535, guid: 4c8fbf777ee1e0347a5fbb2ce748b3b5,
     type: 3}
-  pedAmountToPool: 5
+  pedAmountToPool: 10
 --- !u!1001 &156708382
 PrefabInstance:
   m_ObjectHideFlags: 0
