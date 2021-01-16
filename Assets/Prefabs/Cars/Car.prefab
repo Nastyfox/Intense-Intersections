@@ -305,6 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 001439bc29fa44c4db25d9ef7aeafe0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameStatus: {fileID: 11400000, guid: 217cf17101759f442b0edc7542f78976, type: 2}
   speed: 5
   horizontalOutside: 26
   verticalOutside: 21
@@ -315,6 +316,7 @@ MonoBehaviour:
   stopAngleCars: 20
   stopAngleLights: 20
   angleLightsPassed: 19
+  scoreCar: 10
 --- !u!54 &2738641754494329407
 Rigidbody:
   m_ObjectHideFlags: 0

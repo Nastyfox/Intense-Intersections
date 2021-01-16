@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CarController : MonoBehaviour
+public class CarController : MonoBehaviour, IMovable
 {
+    //Scriptable object for game status
+    public GameStatus gameStatus;
+
     //Private variables
     [SerializeField] private float speed = 5.0f;
     private float carSpeed;
@@ -11,9 +14,6 @@ public class CarController : MonoBehaviour
     //Private variables for positions outside map
     [SerializeField] private float horizontalOutside = 16.0f;
     [SerializeField] private float verticalOutside = 11.0f;
-
-    //GameManager to set Game Over when collision
-    private GameManager gameManager;
 
     //List of all active cars in the scene
     private List<GameObject> activeCars;
@@ -39,9 +39,6 @@ public class CarController : MonoBehaviour
 
     void Awake()
     {
-        //Get game manager
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-
         //Set speed
         carSpeed = speed;
 
@@ -82,14 +79,14 @@ public class CarController : MonoBehaviour
         DeactivateOutsideRoad();
     }
 
-    private void DeactivateOutsideRoad()
+    public void DeactivateOutsideRoad()
     {
         //If they cross a certain point on map, car becomes inactive
         if(transform.position.x <= -horizontalOutside  || transform.position.x >= horizontalOutside || transform.position.z <= -verticalOutside || transform.position.z >= verticalOutside)
         {
             lightsPassed = false;
             gameObject.SetActive(false);
-            gameManager.UpdateScore(scoreCar);
+            gameStatus.UpdateScore(scoreCar);
         }
     }
 
@@ -99,21 +96,27 @@ public class CarController : MonoBehaviour
         if (collision.gameObject.CompareTag("Pedestrian") || collision.gameObject.CompareTag("Car"))
         {
             //If infinite mode, just lose a life
-            if(gameManager.isInfinite)
+            if(gameStatus.isInfinite)
             {
                 if (collision.gameObject.CompareTag("Pedestrian"))
                 {
-                    gameManager.lives--;
+                    gameStatus.lives--;
                 }
                 else if(collision.gameObject.CompareTag("Car"))
                 {
-                    gameManager.lives -= 0.5f;
+                    gameStatus.lives -= 0.5f;
+                }
+
+                //Game over if no more lives
+                if(gameStatus.lives <= 0)
+                {
+                    gameStatus.isGameOver = true;
                 }
             }
             //If easy, normal or hard mode, game over
             else
             {
-                gameManager.GameOver();
+                gameStatus.isGameOver = true;
             }
             collision.gameObject.SetActive(false);
         }

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PedestrianController : MonoBehaviour
+public class PedestrianController : MonoBehaviour, IMovable
 {
+    //Scriptable object for game status
+    public GameStatus gameStatus;
+
     //Private variables
     [SerializeField] private float speed = 2.5f;
     private float pedSpeed;
@@ -15,16 +18,14 @@ public class PedestrianController : MonoBehaviour
     //Animator to launch animation based on state for pedestrian
     private Animator pedAnim;
 
-    //Value for scoring cars
+    //Value for scoring peds
     [SerializeField] private int scorePed = 5;
-    private GameManager gameManager;
 
     void Awake()
     { 
         //Get necessary components when object is activated
         pedAnim = GetComponent<Animator>();
         pedSpeed = speed;
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -35,13 +36,13 @@ public class PedestrianController : MonoBehaviour
         DeactivateOutsideRoad();
     }
 
-    private void DeactivateOutsideRoad()
+    public void DeactivateOutsideRoad()
     {
         //Deactivate pedestrian object if out of the road on camera
         if (transform.position.x <= -horizontalOutside || transform.position.x >= horizontalOutside || transform.position.z <= -verticalOutside || transform.position.z >= verticalOutside)
         {
             gameObject.SetActive(false);
-            gameManager.UpdateScore(scorePed);
+            gameStatus.UpdateScore(scorePed);
         }
     }
 

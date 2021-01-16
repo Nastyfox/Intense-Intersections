@@ -6,12 +6,14 @@ public class SpawnManager : MonoBehaviour
 {
     public enum carPositions { LEFT, RIGHT, UP, BOT}
 
+    //Scriptable object for game status
+    public GameStatus gameStatus;
+
     //Private variables for spawning cars
     [SerializeField] private float carRepeatingTime = 2.5f;
     [SerializeField] private float pedRepeatingTime = 2.5f;
     private Coroutine spawnCars;
     private Coroutine spawnPeds;
-    private GameManager gameManager;
     private int randomCarStart;
     private int randomPedStart;
     private int randomRotation;
@@ -28,7 +30,6 @@ public class SpawnManager : MonoBehaviour
 
     //Public variable for car prefab
     [SerializeField] private GameObject carPrefab;
-    private GameObject pedPrefab;
     private int pedType;
     [SerializeField] private GameObject[] pedPrefabs;
 
@@ -75,19 +76,15 @@ public class SpawnManager : MonoBehaviour
         startRotations[1] = Quaternion.Euler(0, faceLeft, 0);
         startRotations[2] = Quaternion.Euler(0, faceDown, 0);
         startRotations[3] = Quaternion.Euler(0, faceUp, 0);
-
-        //Get game manager to stop spawning on game over
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 }
 
     public void SetDifficulty(int difficulty)
     {
         //If it's infinite mode, don't change difficulty
-        if(!gameManager.isInfinite)
+        if(!gameStatus.isInfinite)
         {
             //Change spawning times based on difficulty level on main menu
-            carRepeatingTime /= difficulty;
-            pedRepeatingTime /= difficulty;
+            IncreaseDifficulty(difficulty);
         }
 
         //Start spawning car every couple of seconds
@@ -95,18 +92,18 @@ public class SpawnManager : MonoBehaviour
         spawnPeds = StartCoroutine(SpawnPedestriansRandom());
     }
 
-    public void IncreaseDifficulty()
+    public void IncreaseDifficulty(int spawnRateDivider)
     {
-        //Reduce spawn rate to increase difficulty
-        carRepeatingTime /= 2;
-        pedRepeatingTime /= 2;
+        //Reduce spawn rate to increase difficulty in infinite mode
+        carRepeatingTime /= spawnRateDivider;
+        pedRepeatingTime /= spawnRateDivider;
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
         //Stop coroutines when game is over in order to stop spawning
-        if(!gameManager.isGameActive)
+        if(!gameStatus.isGameActive)
         {
             StopCoroutine(spawnCars);
             StopCoroutine(spawnPeds);
@@ -157,7 +154,6 @@ public class SpawnManager : MonoBehaviour
             //Wait a certain time before randomly spawn a pedestrian
             yield return new WaitForSeconds(pedRepeatingTime);
             pedType = Random.Range(0, pedPrefabs.Length);
-            pedPrefab = pedPrefabs[pedType];
             randomPedStart = Random.Range(0, pedNumPositions);
             randomRotation = randomPedStart % 4;
             pedPosition = pedStartPositions[randomPedStart];
